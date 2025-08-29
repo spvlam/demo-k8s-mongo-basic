@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-db
+  template:
+    metadata:
+      name: mongo-db-pod
+      labels:
+        app: mongo-db
+    spec:
+      containers:
+        - name: mongodb-container
+          image: mongo
+          ports:
+          - containerPort: 27017
+          env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            valueFrom: 
+              secretKeyRef:
+                name: mongo-secret
+                key: mongo-root-username
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongo-secret
+                key: mongo-root-password
+
+# service and deployment should be in the same configuration file
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-db-internal-service
+spec:
+  #connect to pod via label
+  selector:
+    app: mongo-db
+  ports:
+    - protocol: TCP
+      port: 27017 #this is the service port
+      targetPort: 27017 # this is the connected container port
