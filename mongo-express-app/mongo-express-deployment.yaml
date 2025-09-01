@@ -49,8 +49,10 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 8081 # this is the service port
+      port: 8081 # this is the port of pod
       targetPort: 8081 # this is the connected container port
-      nodePort: 30001 # This port is for external access from 30000 to 32767
+      nodePort: 30001 # This port is for external access from 30000 to 32767, port of node
+
+    
 
 
